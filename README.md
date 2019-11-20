@@ -34,7 +34,7 @@ Create ACR on azure portal:
 2. Run the commando on desktop: az group create --name rangaaci --location eastus
 3. Setting ACR
     1. az acr create --resource-group <<resuorce group name>> --name <<acrname>> --sku Basic admin-enabled true
-    2. sudo az acr login --name <<acrname>>
+    2. sudo az acr login --name <<acrname>> -u <<username>>
     3. az acr show --name <<acrname>> --query loginServer --output table
     4. 
 4. Sudo docker tag <<acrname>>.azurecr.io/sumnode:v1 <<acrname>>.azurecr.io/sumnode:v1
