@@ -37,7 +37,7 @@ Create ACR on azure portal:
     2. sudo az acr login --name <<acrname>> -u <<username>>
     3. az acr show --name <<acrname>> --query loginServer --output table
     4. 
-4. Sudo docker tag <<acrname>>.azurecr.io/sumnode:v1 <<acrname>>.azurecr.io/sumnode:v1
+4. Sudo docker tag gkranga/sumnode:v1 <<acrname>>.azurecr.io/sumnode:v1
 5. Sudo docker push <<acrname>>azurecr.io/sumnode:v1
 6. az acr repository list --name <<acrname>> --output table
 7. az acr credential show --name <<acrname>> --query "passwords[0].value"
