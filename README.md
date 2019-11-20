@@ -12,12 +12,13 @@
     4. sudo systemctl enable docker
     5. sudo docker —version (This should show the version properly)
 
-Lets Create a container and run it on the VM:
+Lets Create a container and run it on the VM: (If putty does not work, then use the cloud shell on Azure prtal to login to the console. User the command "ssh username@public_ip_address_of_the_vm" to loogin to the VM)
 1. sudo docker pull gkranga/sumnode:v1
 2. sudo docker run -p 80:80 -tid gkranga/sumnode:v1
 3. Explore the container:
     1. Sudo docker ps
     2. Sudo docker exec -ti <<container ID>> sh
+3a. On the Azure Portal go to the VM--->Networking and add the inbound port access rule to allow port 80.
 4. Open the browser and hit the URL: http://<<VM IP>>/?a=10&b=20
 5. 
 Quiz Questions:
