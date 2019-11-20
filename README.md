@@ -10,10 +10,10 @@
     2. sudo apt install docker.io
     3. sudo systemctl start docker
     4. sudo systemctl enable docker
-    5. docker —version (This should show the version properly)
+    5. sudo docker —version (This should show the version properly)
 
 Lets Create a container and run it on the VM:
-1. docker pull gkranga/sumnode:v1
+1. sudo docker pull gkranga/sumnode:v1
 2. sudo docker run -p 80:80 -tid gkranga/sumnode:v1
 3. Explore the container:
     1. Sudo docker ps
