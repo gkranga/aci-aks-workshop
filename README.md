@@ -152,17 +152,235 @@ We've found out from the previous sessions that containers independently run are
   1. `kubectl create -f ./sumnode_pod.yaml`
   1. Validate if the pod is running
   
-  ## How do I get rid of the proxy business?
+  ## How do I get rid of the proxy business ##
   
   1. `kubectl run sumnode --image=gkranga/sumnode:v1 --restart=Never --port=80 --expose`
   1. Observe the output carefully. Service is also created.
   1. `kubectl get svc` notice the service? Get the External-IP address 
+  1. `kubectl get svc sumnoode-service --export=true`. If the External-IP is pending, the provisining is not complete. Wait till it gets over.
+  1. lets get the service object `kubectl get svc sumnode-service --export=true -o yaml > sumnode-service.yaml`
+  1. `cat sumnode-service.yaml`
   
+   **Question Time**
+    1. How is service architecture working?
+    1. How did the network and IP addresss dangling get solved?
+    1. Check the resource group MC_* and notice any changes in the resources? explain what is added?
+    1. Types of Services? Cluster, Loadbalancer, NodePort.
+    
+**Take a coffee Break **
+    
+  ## Use ACR image in K8S ##
   
+  1. `kubectl create secret docker-registry regcred --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>`
+  1. `kubectl get secret`
+  1. `kubectl describe secret regcred`
+  1. `kubectl delete pod sumnode`
+  1. `kubectl delete service sumnode-service`
+  1. Edit the sumnode_pod.yaml to change the image and also inlude imagepull secrets. The YAML File should like as below:
+   
+   ```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: sumnode
+  name: sumnode
+spec:
+  containers:
+  - image: rangaacr.azurecr.io/sumnode:v1
+    imagePullPolicy: IfNotPresent
+    name: sumnode
+    ports:
+    - containerPort: 80
+    resources: {}
+  imagePullSecrets:
+  - name: regcred
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+   ```
+  1. Validate that the container is running.
+  
+  ## Lets create a 3 tier architecture app on Container ##
+  
+1. Create a resource group 
+1. Create a mySql database:
+    Perform the following steps to create and configure Azure Database for MySQL used by this app:
+
+### Step A –
+
+Create an Azure Database for MySQL server by using the Azure portal
+Please refer to [https://docs.microsoft.com/en-us/azure/mysql/quickstart-create-mysql-server-database-using-azure-portal](https://docs.microsoft.com/en-us/azure/mysql/quickstart-create-mysql-server-database-using-azure-portal) for creation of database
+** Please ensure that database is created in the same resource group and location as the app. This consideration reduces database latency across geo
+
+### Step B -
+
+We need to setup firewall settings for the app to access the database. In the Azure Database for MySQL settings blade Under the Firewall rules heading, select the blank text box in the Rule Name column to begin creating the firewall rule. 
+For this Quick start, let's allow all IP addresses into the server by filling in boxes in each column with the following values:
+
+Rule name -  AllowAllIps
+
+Start IP -   0.0.0.0
+
+End IP   -   255.255.255.255
+
+Alternatively: you can choose to allow only the 10.x.x.x IP range of the kubernetes vnet.
+
+Allowing all IP addresses is not secure. This example is provided for simplicity, but in a real-world scenario, you need to know the precise IP address ranges to add for your applications and users. 
+Please refer to [https://docs.microsoft.com/en-us/azure/mysql/howto-manage-firewall-using-portal](https://docs.microsoft.com/en-us/azure/mysql/howto-manage-firewall-using-portal)
 
 
+### Step C – 
+
+Connect to the database created in step 1 using cloudshell and run the command 
+`mysql -h <<hostname>>` -p
+refer to the screen shot below
+![](https://github.com/gkranga/teamcgbb/blob/master/images/mysql%20password%20prompt.png)
+
+enter the password you had provided when provisioning the mysql DB.
+
+![](https://github.com/gkranga/teamcgbb/blob/master/images/mysql%20login%20screen.png)
+
+after the successful login you will get the mysql prompt
+
+run the query `show databases;` and verify that you are getting responses.
+
+![](https://github.com/gkranga/teamcgbb/blob/master/images/showdatabases.png)
+
+
+### Step D -
+Now run the command `create database` _`<<name of your choice>>`_ to create a database of your choice of name 
+
+## Create Kubernetes secret for DB connectin string ##
+On the console of the VM from step1 run the following commands:
+
+From the previous step, copy the following data points:
+1. The JDBC URL for connecting to the database. Copy the text as shown in the highlighted section of the text. In the coped string, replace the _`{your_database}`_ with the name you gave in the previous step while creating the Database. 
+![](https://github.com/gkranga/teamcgbb/blob/master/images/JDBC.png)
+1. username of the DB
+![](https://github.com/gkranga/teamcgbb/blob/master/images/DB%20Username.png)
+1. mysql password that you have configured.
+
+Now run the following commands to get the base 64 encoding of the above 3 data (url, username & password)
+
+`echo -n <<jdbc url edited from the above>> | base64`
+
+`echo -n <<username from the above>> | base64`
+
+`echo -n <<mysql password>> | base64`
+
+copy paste the output of the above in any file/note (ensure that you don't add any extra spaces while copying)
+
+Perform the following steps
+
+1. Edit the file secret.yml using your choice of editor.
+
+against the 3 keys "username", "password" and "url" paste the corresponding values from above and save the file. Ensure that you don't have any extra spaces at the end or beginning of the text being pasted. The edited file would look as give below
+![](https://github.com/gkranga/teamcgbb/blob/master/images/secret%20yaml.png)
+
+ run the following command
+
+`kubectl create -f ./secret.yml`
+
+validate that the secrets are properly configured by running the command 
+
+`kubectl get secret mysecret -o yaml`
+![](https://github.com/gkranga/teamcgbb/blob/master/images/secret%20validate.png)
+
+
+
+Now you are all set to run the application and connect to the database. 
+
+1. Create the ecommerce POD
+1. Create a YAML file with the following code
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ecommerce-pod
+  labels: 
+    app: ecommerce
+spec:
+      containers:
+        - name: ecommerce-container
+          image: index.docker.io/gkranga/ecommerce:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+          - name: SECRET_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: username
+          - name: SECRET_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: password
+          - name: URL
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: url
+      restartPolicy: Never
+```
+
+## Expose the Service for the app ##
+
+1. create the service by creating the ecommerce-svc.yaml with the following content:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: ecommerce-service
+  name: ecommerce-service
+spec:
+  ports:
+    # The port that this service should serve on.
+    - port: 8080
+      targetPort: 8080
+  # Label keys and values that must match in order to receive traffic for this service.
+  selector:
+    app: ecommerce
+  type: LoadBalancer
+```
+1. `kubectl apply -f ./ecommerce-svc.yaml`
+It will take a few minutes for the external IP to be assigned for the service. Until then the external IP status will be shown as Pending.
+
+After this, open the browser and go to the URL http://external IP:8080/
+
+This should load the tomcat screen
+
+The URL http://external IP:8080/OnlineShoppingPortal will load the application page
+
+![](https://github.com/gkranga/teamcgbb/blob/master/images/App%20Login%20page.png)
+
+
+## Create DB Tables to start the complete ecommerce application on Kubernetes ##
  
- 
+ Run the following queries on the mysql prompt on cloud shell (Refer to previous steps)
+```
+insert into role values(1,'USER');
+
+insert into role values(2,'ADMIN');
+
+insert into products values('S001','Java',150,20);
+
+insert into products values('S002','Java8',160,1);
+
+insert into products values('S003','node',170,0);
+
+insert into products values('S004','angular',180,2);
+
+insert into products values('S005','jsp',190,5);
+
+insert into products values('S006','spring',120,10);
+
+insert into products values('S007','hibernate',110,19);
+
+```
+Now go the application URL page, register user and experience the ecommerce flows and also validate the data updates in the DB.
         
     
     
