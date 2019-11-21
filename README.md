@@ -383,7 +383,9 @@ insert into products values('S007','hibernate',110,19);
 Now go the application URL page, register user and experience the ecommerce flows and also validate the data updates in the DB.
         
     
-    
+## Virtual Nodes ##
+1. Delete the resuorce groups previously created for K8S
+2. Follow the instructions [here](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-portal) 
 
 
 
