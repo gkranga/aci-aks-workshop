@@ -166,6 +166,12 @@ We've found out from the previous sessions that containers independently run are
     1. How did the network and IP addresss dangling get solved?
     1. Check the resource group MC_* and notice any changes in the resources? explain what is added?
     1. Types of Services? Cluster, Loadbalancer, NodePort.
+    1. Can you think of few more operational challenges of running apps on K8S? Monitoring, alerting, logging?
+    1. Deployment patterns: 
+    1. release managemnt Canary releases, Dark Launching, AB Testing, Progressive exposure deployment, Blue green deployments
+    
+   **Architecturally what is Kubernetes. Relate to Object Oriented Programming.**
+    
     
 **Take a coffee Break **
     
@@ -388,5 +394,5 @@ Now go the application URL page, register user and experience the ecommerce flow
 2. Follow the instructions [here](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-portal) 
 
 
-
+## Introducing Azure DevOps ##
 
