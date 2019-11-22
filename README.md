@@ -145,7 +145,7 @@ We've found out from the previous sessions that containers independently run are
   
 ## Working with Kubernetes objects ##
   In real development situation you cannot be running the `kubectl run` always. We will need to work with API objects of kubernetes. What would we do?
-  1. `kubectl run sumnode --image=gkranga/sumnode:v1-restart=Never --port=80 --dry-run -o yaml > sumnode_pod.yaml `
+  1. `kubectl run sumnode --image=gkranga/sumnode:v1 --restart=Never --port=80 --dry-run -o yaml > sumnode_pod.yaml `
   1. `cat sumnode_pod.yaml`
   1. Explain the objects of the yaml file. 
   1. `kubectl delete po sumnode`
