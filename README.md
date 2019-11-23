@@ -14,7 +14,7 @@
 1. Install Azure CLI by running the below command
     `curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`
 1. Install the kubectl
-    1. download the binaries `curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl`
+    1. download the binaries `curl -LO https://storage.googleapis.com/kubernetes-release/release/ `` `curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt` ``/bin/linux/amd64/kubectl`
     1. `chmod +x ./kubectl`
     1. `sudo mv ./kubectl /usr/local/bin/kubectl`
     1. run the command `kubectl version` verify that the command is working.
