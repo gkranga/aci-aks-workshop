@@ -40,7 +40,7 @@ Now execute the following commands to run the sample container called sumnode (T
 
 If you successfully get the result. You have successfully  run the container on a server.
 
-Quiz Questions:
+**Quiz Questions**
 
 1. What is the IP address of the container?
 1. Login into container and run the command: `sudo docker exec -ti <<container ID>> sh` and try to create a file with the command `touch <<any filename you want >>` 
@@ -68,7 +68,7 @@ In this section, you will need to run the `az` commands on the ubuntu VM
     1. `sudo az acr login --name <<acrname>> -u <<username from the above>>`
     1. `az acr repository list --name <<acrname from the above>> --output table` (This list should be empty)
     
-    ##Push the sumnode container to ACR 
+    ## Push the sumnode container to ACR 
     
     Run the fllowing commands in sequence on the Ubuntu VM:
     
@@ -88,7 +88,8 @@ Now will run the container not a server but on a PaaS service called Azure Conta
 1. The out put of the command takes a while for the ACI to get provisioned and you will see the public IP for the ACI.
 1. Access the application with the browser: `http://<<Public IP address of the ACI>>/?a=10&b=20`
 
-Question time again
+**Question time again**
+
 1. whats the value of the ACI and ACR?
 
 Enterprise Security Capabilty:
@@ -109,7 +110,7 @@ We've found out from the previous sessions that containers independently run are
     1. `az aks create -g testrangaaks -n rangaakscluster --generate-ssh-keys --node-count 1`
     1. wait till the cluster gets created. 
     
-        **Questin Time**
+        **Question Time**
         1. What is a cluster?
         **Cntainers are Developer Friendly but how about operations?**
         1. Lets re-visit the problem of IP address of the container? how will yuo reach teh container if the server goes down?
@@ -133,6 +134,7 @@ We've found out from the previous sessions that containers independently run are
  1. `curl http://127.0.0.1:8000` check that nginx page is loading. 
  
      **Question Time**
+     
     1. Explain the networking? 
     1. What is the IP range? 
     1. What's the proxy?
@@ -165,6 +167,7 @@ We've found out from the previous sessions that containers independently run are
   1. `cat sumnode-service.yaml`
   
    **Question Time**
+   
     1. How is service architecture working?
     1. How did the network and IP addresss dangling get solved?
     1. Check the resource group MC_* and notice any changes in the resources? explain what is added?
